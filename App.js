@@ -1,13 +1,12 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import AppTap from './AppTab'
-
+import AppTab from './AppTab';
+ 
 export default function App() {
   return (
     <>
-    <AppTap/>
-    <StatusBar style = 'light'/> 
+      <AppTab />
+      <StatusBar style="light" />
     </>
   );
 }
- 
