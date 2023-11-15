@@ -1,12 +1,20 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Database from './Database';
  
-export default function AppForms({navigation}) {
+export default function AppForms({route, navigation}) {
 
+  const id = route.params ? route.params.id : undefined;
   const [descricao, setDescricao] = useState('');
   const [quantidade, setQuantidade] = useState('');
+
+  useEffect(() => {
+    if(!route.params) return;
+    setDescricao(route.params.descricao);
+    setQuantidade(route.params.quantidade.toString());
+  }, {route})
 
   function mudancaDescricao(descricao){
     setDescricao(descricao);
@@ -17,15 +25,10 @@ export default function AppForms({navigation}) {
   }
 
   async function pressionarBotao(){
-    const listItem = {id: new Date().getTime(), descricao, quantidade:parseInt(quantidade)};
-    let saveItems = [];
-    const response = await AsyncStorage.getItem('items');
-    if(response) saveItems = JSON.parse(response);
-    saveItems.push(listItem);
+    const listItem = {descricao, quantidade:parseInt(quantidade)};
+    Database.saveItem(listItem)
 
-    await AsyncStorage.setItem('items', JSON.stringify(saveItems));
-
-    navigation.navigate("AppList", listItem);
+    .then(response => navigation.navigate("AppList", listItem));
   }
   
   return(
